@@ -66,7 +66,7 @@ class UI {
     const div = document.createElement('div');
     div.className = 'curr-indicator';
     div.innerHTML = `
-    <img src="images/arrow.png" alt="current location" class="mt-n1" id="icon-curr">
+    <img src="img/arrow.png" alt="current location" class="mt-n1" id="icon-curr">
     <p class="d-inline m-1 text-white">Current Location</p>
     `;
     this.cardContents.insertBefore(div, this.location);
