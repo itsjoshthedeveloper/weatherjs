@@ -29,7 +29,9 @@ class UI {
     this.feelslike.textContent = `Feels Like: ${this.keltofah(
       data.main.feels_like
     )} F (${this.keltocel(data.main.feels_like)} C)`;
-    this.wind.textContent = `Wind: ${data.wind.speed} MPH at ${data.wind.deg}\xB0`;
+    this.wind.textContent = `Wind: ${this.mpsToMPH(
+      data.wind.speed
+    )} MPH going ${this.degToCompass(data.wind.deg)}`;
   }
 
   // Show alert message
@@ -86,5 +88,34 @@ class UI {
   // Convert from Kelvin to Celsius
   keltocel(kel) {
     return (kel - 273.15).toFixed(2);
+  }
+
+  // Convert from meters/sec to MPH
+  mpsToMPH(mps) {
+    return (mps * 2.237).toFixed(2);
+  }
+
+  // Convert from degrees to direction
+  degToCompass(deg) {
+    var val = Math.floor(deg / 22.5 + 0.5);
+    var arr = [
+      'N',
+      'NNE',
+      'NE',
+      'ENE',
+      'E',
+      'ESE',
+      'SE',
+      'SSE',
+      'S',
+      'SSW',
+      'SW',
+      'WSW',
+      'W',
+      'WNW',
+      'NW',
+      'NNW',
+    ];
+    return arr[val % 16];
   }
 }
