@@ -21,7 +21,7 @@ class UI {
     this.temp.textContent = `${this.keltofah(
       data.main.temp
     )} F (${this.keltocel(data.main.temp)} C)`;
-    this.icon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+    this.icon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
     this.icon.alt = data.weather[0].description;
     this.humidity.textContent = `Relative Humidity: ${data.main.humidity}%`;
     this.pressure.textContent = `Pressure: ${data.main.pressure} hPa`;
