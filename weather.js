@@ -1,10 +1,5 @@
 class Weather {
   constructor() {
-    // Default location
-    this.location = {
-      city: 'Suwanee',
-      state: 'Georgia',
-    };
     // API key
     this.apiKey = '9a5abfe4e6e3e16e4736753efec5c66b';
   }

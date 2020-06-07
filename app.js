@@ -1,13 +1,18 @@
-// Init Weather object
+// Init objects
+const storage = new Storage();
 const weather = new Weather();
-
-// Init UI object
 const ui = new UI();
+
+// Get stored location data
+const weatherLocation = storage.getLocationData();
 
 // UI vars
 const UIcity = document.querySelector('#city');
 const UIstate = document.querySelector('#state');
 const UIbtn = document.querySelector('#w-change-btn');
+
+// Get weather on DOM load
+document.addEventListener('DOMContentLoaded', getWeather);
 
 // Change location button event listener
 UIbtn.addEventListener('click', changeLocation);
@@ -19,6 +24,7 @@ function changeLocation(e) {
       city: UIcity.value,
       state: UIstate.value,
     };
+    storage.setLocationData(location);
     setLocation(location, 'CityState');
     $('#locModal').modal('hide');
   }
@@ -39,4 +45,6 @@ function setLocation(location, type) {
 }
 
 // Init first location
-setLocation(weather.location, 'CityState');
+function getWeather(e) {
+  setLocation(weatherLocation, 'CityState');
+}
