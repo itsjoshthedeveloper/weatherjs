@@ -1,10 +1,8 @@
 // Init objects
 const storage = new Storage();
+const geocode = new Geocode();
 const weather = new Weather();
 const ui = new UI();
-
-// Get stored location data
-const weatherLocation = storage.getLocationData();
 
 // UI vars
 const UIcity = document.querySelector('#city');
@@ -13,13 +11,15 @@ const UIchangeBtn = document.querySelector('#w-change-btn');
 const UIcurrBtn = document.querySelector('#w-curr-btn');
 
 // Get weather on DOM load
-document.addEventListener('DOMContentLoaded', getWeather);
+document.addEventListener('DOMContentLoaded', (e) =>
+  storeCurrLocation('initial')
+);
 
 // Change location button event listener
 UIchangeBtn.addEventListener('click', changeLocation);
 
 // Current location button event listener
-UIcurrBtn.addEventListener('click', currentLocation);
+UIcurrBtn.addEventListener('click', (e) => storeCurrLocation('button'));
 
 // Change location
 function changeLocation(e) {
@@ -31,39 +31,98 @@ function changeLocation(e) {
     storage.setLocationData(location);
     setLocation(location, 'CityState');
     $('#locModal').modal('hide');
+    ui.showAlert(
+      `Changed location to ${location.city}, ${location.state}`,
+      'alert alert-dismissible alert-success'
+    );
   }
 }
 
 // Set location weather data
 function setLocation(location, type) {
-  // Make http request
-  weather.getData(location, type).then((data) => {
-    if (type === 'CityState') {
+  if (type === 'LatLon') {
+    // Make geocode http request
+    geocode.getGeocode(location).then((geo) => {
+      location = {
+        city: geo[3].long_name,
+        state: geo[5].long_name,
+      };
+      // Store current location data
+      storage.setLocationData(location);
+      console.log('setLocation -> getGeocode', location);
+      // Make weather http request
+      weather.getData(location).then((data) => {
+        // Add state to data
+        data['state'] = location.state;
+        // Show weather data
+        ui.showData(data);
+        console.log('setLocation -> data', data);
+      });
+    });
+  } else if (type === 'CityState') {
+    // Make weather http request
+    weather.getData(location).then((data) => {
       // Add state to data
       data['state'] = location.state;
-    }
-    // Show weather data
-    ui.showData(data, type);
-    console.log(data);
-  });
+      // Show weather data
+      ui.showData(data);
+      console.log('setLocation -> data', data);
+    });
+  }
 }
 
 // Gets current location
-function currentLocation(e) {
-  navigator.geolocation.getCurrentPosition(showPosition);
-}
-
-// Formats location
-function showPosition(position) {
-  console.log(
-    'Latitude: ' +
-      position.coords.latitude +
-      '\nLongitude: ' +
-      position.coords.longitude
-  );
-}
-
-// Init first location
-function getWeather(e) {
-  setLocation(weatherLocation, 'CityState');
+function storeCurrLocation(event) {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        // Current location
+        currLocation = {
+          currLat: position.coords.latitude,
+          currLon: position.coords.longitude,
+        };
+        // Set current location
+        setLocation(currLocation, 'LatLon');
+        if (event === 'button') {
+          ui.showAlert(
+            'Changed location to current location',
+            'alert alert-dismissible alert-success'
+          );
+        }
+      },
+      (error) => {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            ui.showAlert(
+              'User denied the request for geolocation',
+              'alert alert-dismissible alert-danger'
+            );
+            break;
+          case error.POSITION_UNAVAILABLE:
+            ui.showAlert(
+              'Location info is unavailable',
+              'alert alert-dismissible alert-danger'
+            );
+            break;
+          case error.TIMEOUT:
+            ui.showAlert(
+              'The request to get user location timed out',
+              'alert alert-dismissible alert-danger'
+            );
+            break;
+          case error.UNKNOWN_ERROR:
+            ui.showAlert(
+              'An unknown error occurred',
+              'alert alert-dismissible alert-danger'
+            );
+            break;
+        }
+      }
+    );
+  } else {
+    ui.showAlert(
+      'Geolocation not supported by this browser',
+      'alert alert-dismissible alert-danger'
+    );
+  }
 }

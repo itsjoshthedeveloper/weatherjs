@@ -10,13 +10,13 @@ class UI {
     this.pressure = document.querySelector('#w-pressure');
     this.feelslike = document.querySelector('#w-feelslike');
     this.wind = document.querySelector('#w-wind');
+    this.container = document.querySelector('.container');
+    this.card = document.querySelector('#card');
   }
 
   // Show data
-  showData(data, type) {
-    if (type === 'CityState') {
-      this.location.textContent = `${data.name}, ${data.state}`;
-    }
+  showData(data) {
+    this.location.textContent = `${data.name}, ${data.state}`;
     this.desc.textContent = data.weather[0].main;
     this.temp.textContent = `${this.keltofah(
       data.main.temp
@@ -29,6 +29,30 @@ class UI {
       data.main.feels_like
     )} F (${this.keltocel(data.main.feels_like)} C)`;
     this.wind.textContent = `Wind: ${data.wind.speed} MPH at ${data.wind.deg}\xB0`;
+  }
+
+  // Show alert message
+  showAlert(msg, className) {
+    // Clear any remaining alerts
+    this.clearAlert();
+    // Create and insert div
+    const div = document.createElement('div');
+    div.className = className;
+    div.innerHTML = `
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    ${msg}
+    `;
+    this.container.insertBefore(div, this.card);
+
+    setTimeout(this.clearAlert, 3000);
+  }
+
+  // Clear alert message
+  clearAlert() {
+    const currentAlert = document.querySelector('.alert');
+    if (currentAlert) {
+      currentAlert.remove();
+    }
   }
 
   // Convert from Kelvin to Fahrenheit
