@@ -30,6 +30,7 @@ function changeLocation(e) {
     };
     storage.setLocationData(location);
     setLocation(location, 'CityState');
+    ui.clearCurrent();
     $('#locModal').modal('hide');
     ui.showAlert(
       `Changed location to ${location.city}, ${location.state}`,
@@ -91,6 +92,8 @@ function storeCurrLocation(event) {
         };
         // Set current location
         setLocation(currLocation, 'LatLon');
+        // Enable current location indicator
+        ui.showCurrent();
         if (event === 'button') {
           ui.showAlert(
             'Changed location to current location',
@@ -129,6 +132,7 @@ function storeCurrLocation(event) {
             );
             break;
         }
+        ui.clearCurrent();
       }
     );
   } else {
