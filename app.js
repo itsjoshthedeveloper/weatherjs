@@ -53,14 +53,7 @@ function setLocation(location, type) {
         // Store current location data
         storage.setLocationData(location);
         console.log('setLocation -> getGeocode', location);
-        // Make weather http request
-        weather.getData(location).then((data) => {
-          // Add state to data
-          data['state'] = location.state;
-          // Show weather data
-          ui.showData(data);
-          console.log('setLocation -> data', data);
-        });
+        getWeather(location);
       })
       .catch((err) => {
         ui.showAlert(
@@ -69,15 +62,29 @@ function setLocation(location, type) {
         );
       });
   } else if (type === 'CityState') {
-    // Make weather http request
-    weather.getData(location).then((data) => {
-      // Add state to data
-      data['state'] = location.state;
-      // Show weather data
-      ui.showData(data);
-      console.log('setLocation -> data', data);
-    });
+    getWeather(location);
   }
+}
+
+// Get weather
+function getWeather(location) {
+  // Make weather http request
+  weather.getData(location).then((data) => {
+    // Get state code
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'states_codes.json', true);
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        // Add state to data
+        data['state'] = response[location.state];
+        // Show weather data
+        ui.showData(data);
+        console.log('setLocation -> data', data);
+      }
+    };
+    xhr.send();
+  });
 }
 
 // Gets current location
