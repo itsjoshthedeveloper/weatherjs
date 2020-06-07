@@ -42,23 +42,31 @@ function changeLocation(e) {
 function setLocation(location, type) {
   if (type === 'LatLon') {
     // Make geocode http request
-    geocode.getGeocode(location).then((geo) => {
-      location = {
-        city: geo[3].long_name,
-        state: geo[5].long_name,
-      };
-      // Store current location data
-      storage.setLocationData(location);
-      console.log('setLocation -> getGeocode', location);
-      // Make weather http request
-      weather.getData(location).then((data) => {
-        // Add state to data
-        data['state'] = location.state;
-        // Show weather data
-        ui.showData(data);
-        console.log('setLocation -> data', data);
+    geocode
+      .getGeocode(location)
+      .then((geo) => {
+        location = {
+          city: geo[3].long_name,
+          state: geo[5].long_name,
+        };
+        // Store current location data
+        storage.setLocationData(location);
+        console.log('setLocation -> getGeocode', location);
+        // Make weather http request
+        weather.getData(location).then((data) => {
+          // Add state to data
+          data['state'] = location.state;
+          // Show weather data
+          ui.showData(data);
+          console.log('setLocation -> data', data);
+        });
+      })
+      .catch((err) => {
+        ui.showAlert(
+          `Error: ${err}\nPlease reload...`,
+          'alert alert-dismissible alert-danger'
+        );
       });
-    });
   } else if (type === 'CityState') {
     // Make weather http request
     weather.getData(location).then((data) => {
