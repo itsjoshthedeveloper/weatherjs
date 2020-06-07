@@ -91,6 +91,10 @@ function storeCurrLocation(event) {
         }
       },
       (error) => {
+        if (event === 'initial') {
+          const weatherLocation = storage.getLocationData();
+          setLocation(weatherLocation, 'CityState');
+        }
         switch (error.code) {
           case error.PERMISSION_DENIED:
             ui.showAlert(
@@ -120,6 +124,10 @@ function storeCurrLocation(event) {
       }
     );
   } else {
+    if (event === 'initial') {
+      const weatherLocation = storage.getLocationData();
+      setLocation(weatherLocation, 'CityState');
+    }
     ui.showAlert(
       'Geolocation not supported by this browser',
       'alert alert-dismissible alert-danger'
