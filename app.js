@@ -34,7 +34,7 @@ function changeLocation(e) {
     $('#locModal').modal('hide');
     ui.showAlert(
       `Changed location to ${location.city}, ${location.state}`,
-      'alert alert-dismissible alert-success'
+      'success'
     );
   }
 }
@@ -56,10 +56,7 @@ function setLocation(location, type) {
         getWeather(location);
       })
       .catch((err) => {
-        ui.showAlert(
-          `Error: ${err}\nPlease reload...`,
-          'alert alert-dismissible alert-danger'
-        );
+        ui.showAlert(`Error: ${err}\nPlease reload...`, 'danger');
       });
   } else if (type === 'CityState') {
     getWeather(location);
@@ -102,10 +99,7 @@ function storeCurrLocation(event) {
         // Enable current location indicator
         ui.showCurrent();
         if (event === 'button') {
-          ui.showAlert(
-            'Changed location to current location',
-            'alert alert-dismissible alert-success'
-          );
+          ui.showAlert('Changed location to current location', 'success');
         }
       },
       (error) => {
@@ -115,28 +109,19 @@ function storeCurrLocation(event) {
         }
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            ui.showAlert(
-              'User denied the request for geolocation',
-              'alert alert-dismissible alert-danger'
-            );
+            ui.showAlert('User denied the request for geolocation', 'danger');
             break;
           case error.POSITION_UNAVAILABLE:
-            ui.showAlert(
-              'Location info is unavailable',
-              'alert alert-dismissible alert-danger'
-            );
+            ui.showAlert('Location info is unavailable', 'danger');
             break;
           case error.TIMEOUT:
             ui.showAlert(
               'The request to get user location timed out',
-              'alert alert-dismissible alert-danger'
+              'danger'
             );
             break;
           case error.UNKNOWN_ERROR:
-            ui.showAlert(
-              'An unknown error occurred',
-              'alert alert-dismissible alert-danger'
-            );
+            ui.showAlert('An unknown error occurred', 'danger');
             break;
         }
         ui.clearCurrent();
@@ -147,9 +132,6 @@ function storeCurrLocation(event) {
       const weatherLocation = storage.getLocationData();
       setLocation(weatherLocation, 'CityState');
     }
-    ui.showAlert(
-      'Geolocation not supported by this browser',
-      'alert alert-dismissible alert-danger'
-    );
+    ui.showAlert('Geolocation not supported by this browser', 'danger');
   }
 }

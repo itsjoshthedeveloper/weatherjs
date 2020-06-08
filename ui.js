@@ -40,7 +40,8 @@ class UI {
     this.clearAlert();
     // Create and insert div
     const div = document.createElement('div');
-    div.className = className;
+    div.className = 'fixed-top alert alert-dismissible';
+    div.className = `${div.className} alert-${className}`;
     div.innerHTML = `
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     ${msg}
